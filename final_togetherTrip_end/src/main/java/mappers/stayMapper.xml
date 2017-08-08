@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper    
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="stay">
+
+	<resultMap type="trip.stay.dto.StayDto" id="result">
+		<result column="s_num" property="s_num" />
+		<result column="s_title" property="s_title" />
+		<result column="s_loc" property="s_loc" />
+		<result column="s_state" property="s_state" />
+		<result column="s_city" property="s_city" />
+		<result column="s_tel" property="s_tel" />
+		<result column="s_contents" property="s_contents" />
+		<result column="s_reg_date" property="s_reg_date" />
+		<result column="s_read_count" property="s_read_count" />
+		<result column="s_type" property="s_type" />
+		<collection property="sImage" javaType="java.util.List"
+			ofType="trip.stay.dto.StayImgDto">
+			<result column="s_thumbnail" property="s_thumbnail" />
+			<result column="s_img1" property="s_img1" />
+			<result column="s_img2" property="s_img2" />
+			<result column="s_img3" property="s_img3" />
+		</collection>
+		<collection property="hotel" javaType="java.util.List"
+			ofType="trip.stay.dto.HotelDto">
+			<result column="h_type" property="h_type" />
+			<result column="h_price" property="h_price" />
+			<result column="h_image" property="h_image" />
+		</collection>
+		<collection property="motel" javaType="java.util.List"
+			ofType="trip.stay.dto.MotelDto">
+			<result column="m_type" property="m_type" />
+			<result column="m_price" property="m_price" />
+			<result column="m_image" property="m_image" />
+		</collection>
+		<collection property="pension" javaType="java.util.List"
+			ofType="trip.stay.dto.PensionDto">
+			<result column="p_type" property="p_type" />
+			<result column="p_price" property="p_price" />
+			<result column="p_image" property="p_image" />
+		</collection>
+	</resultMap>
+
+	<select id="stayInfo" parameterType="int" resultMap="result">
+		select *
+		from stay s, stay_img i
+		where s.s_num = i.s_num
+		and i.s_num=#{s_num}
+	</select>
+	
+	<select id="stayImgInfo" parameterType="int" resultType="trip.stay.dto.StayImgDto">
+		SELECT * FROM stay_img
+		WHERE s_num = #{s_num}
+	</select>
+
+	<!-- 숙소페이지의 마지막 레코드를 받아오기 위해.. -->
+	<select id="lastRecord" resultType="int">
+		SELECT * FROM
+		(SELECT s_num FROM stay ORDER BY s_num desc, ROWNUM DESC)
+		WHERE ROWNUM = 1
+	</select>
+
+	<select id="count" resultType="int">
+		select count(*) from stay
+	</select>
+
+	<select id="list" resultMap="result" parameterType="trip.stay.dto.PageDto">
+		<![CDATA[
+		select b.* from(
+		select rownum as rm, a.* from(
+		select s.s_num, s.s_title, s.s_loc, s.s_state, s.s_city, s.s_tel, s.s_contents, s.s_reg_date, s.s_read_count, s.s_type, s.m_id, i.s_thumbnail, i.s_img1, i.s_img2, i.s_img3 from stay s, stay_img i where s.s_num=i.s_num ORDER BY s.s_num DESC)a)b
+		where b.rm>=#{startRow} and b.rm<=#{endRow}
+		]]>
+	</select>
+
+	<select id="hotel" parameterType="int" resultMap="result">
+		select * from
+		stay s, stay_img i, hotel h
+		where s.s_num=h.s_num and h.s_num=i.s_num
+		and s.s_num=#{s_num}
+	</select>
+
+	<select id="motel" parameterType="int" resultMap="result">
+		select * from
+		stay s, stay_img i, motel m
+		where s.s_num=m.s_num and m.s_num=i.s_num
+		and s.s_num=#{s_num}
+	</select>
+
+	<select id="pension" parameterType="int" resultMap="result">
+		select * from
+		stay s, stay_img i, pension p
+		where s.s_num=p.s_num and p.s_num=i.s_num
+		and s.s_num=#{s_num}
+	</select>
+
+	<!-- <select id="motelSort" resultMap="result" parameterType="int"> <![CDATA[ 
+		select b.* from( select rownum as rm, a.* from( select s.s_num, s.s_title, 
+		s.s_type, s.m_id, m.m_type, m.m_price from stay s, motel m where s.s_num=m.s_num 
+		and s.s_num=#{s_num} order by s.s_num asc)a)b where b.rm=2 ]]> </select> -->
+
+	<select id="stay_cnt" resultType="int">
+		select count(*) from stay
+	</select>
+
+	<!-- 조회수 증가 -->
+	<update id="readCount" parameterType="int">
+		update stay
+		set
+		s_read_count=s_read_count+1
+		where s_num=#{s_num}
+	</update>
+
+	<!-- 예약하기 (reservation 테이블에 insert -->
+
+	<insert id="reserve" parameterType="trip.stay.dto.ReserveDto">
+		insert into reservation
+		values(1,#{res_total_price},#{res_check_in},#{res_check_out},#{res_pay_check,jdbcType=VARCHAR},#{u_id},#{s_num})
+	</insert>
+
+
+	<!-- 지도 -->
+	<select id="map" resultType="String" parameterType="int">
+		select s_state
+		from stay
+		where s_num=#{s_num}
+	</select> 
+	
+	<!-- <insert id="insertGood" parameterType="trip.stay.dto.GoodDto">
+		INSERT INTO good
+		(g_num, u_id, s_num) VALUES 
+		(good_g_num_seq.NEXTVAL, #{u_id}, #{s_num})
+	</insert> -->
+	
+	<!-- update문을 삭제함 -->
+	
+	
+	<!-- 좋아요 눌렀는지 검사 -->
+	<!-- <select id="checkGood" parameterType="trip.stay.dto.GoodDto" resultType="int">
+		SELECT count(*)
+		FROM good
+		WHERE p_num = #{s_num} 
+		AND 
+		<choose>
+			<when test="u_id == 'null'">
+				u_id = null
+			</when>
+			<otherwise>
+				u_id = #{u_id}
+			</otherwise>
+		</choose>
+	</select> -->
+	
+</mapper>

@@ -1,0 +1,84 @@
+@CHARSET "UTF-8";
+
+ul {
+	list-style: none;
+	list-style-image: none;
+}
+
+.tabs {
+	position: relative;
+	padding: .2em
+}
+
+.tabs ul {
+	margin: 0;
+	padding: .2em .2em 0
+}
+
+.tabs ul li {
+	list-style: none;
+	float: left;
+	position: relative;
+	top: 0;
+	margin: 1px 10px 0 0;
+	border-bottom-width: 0;
+	padding: 0;
+	text-align: center;
+	white-space: nowrap;
+	width: auto;
+}
+
+h2.demoHeaders{
+	margin-top: 20px;
+	margin-bottom: 10px;
+}
+
+#container-top {
+	width: 100%;
+	margin: 0;
+}
+
+.sub_location {
+	z-index: 110;
+	top: 0;
+	left: 0;
+	width: 100%;
+	background: #102b6b;
+	z-index: 102;
+	height: 60px;
+	margin-top: 150px;
+}
+
+.sub_location .wrapper {
+	margin: 0 auto;
+	width: 1170px;
+}
+
+.sub_location li {
+	float: left;
+	vertical-align: middle;
+	margin: 0;
+	padding: 0
+}
+
+.sub_location .location {
+	float: left;
+	padding-left: 15px;
+}
+
+.sub_location .location li a {
+	display: block;
+	padding: 20px 0 20px 30px;
+	background:
+		url(http://tong.visitkorea.or.kr/img/vk/kor/bz15/travel/trv_list/view/sub_loca_arw.gif)
+		no-repeat;
+	color: #fff
+}
+
+.sub_location .location li a.home {
+	background:
+		url(http://tong.visitkorea.or.kr/img/vk/kor/bz15/travel/trv_list/view/sub_loca_home.png)
+		no-repeat 50% 50%;
+	font-size: 0;
+	margin-top: 10px;
+}

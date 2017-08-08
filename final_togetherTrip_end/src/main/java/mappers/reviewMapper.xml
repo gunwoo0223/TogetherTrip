@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper    
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="review">
+
+<!-- 페이징처리를 위한 게시글 총 수 -->
+<select id="reviewCount" resultType="int">
+	SELECT count(*) FROM review
+</select>
+
+<!-- 게시글 리스트 -->
+<resultMap type="trip.review.dto.ReviewDto" id="listMap">
+	<result column="rv_num" property="rvNum"/>
+	<result column="rv_title" property="rvTitle"/>
+	<result column="rv_reg_date" property="rvRegDate"/>
+	<result column="rv_read_count" property="rvReadCount"/>
+	<result column="rv_writer" property="rvWriter"/>
+</resultMap>
+<select id="reviewList" resultMap="listMap" parameterType="trip.review.dto.PageDto">
+	<!-- SELECT rv_num, rv_title, rv_reg_date, rv_read_count, rv_writer
+	FROM review
+	ORDER BY rv_num DESC -->
+	<![CDATA[
+		SELECT b.* FROM(
+		SELECT rownum as rm, a.* FROM(
+		SELECT rv_num, rv_title, rv_reg_date, rv_read_count, rv_writer FROM review ORDER BY rv_num DESC)a)b
+		WHERE b.rm >= #{startRow} AND b.rm <= #{endRow}
+	]]>
+</select>
+
+<!-- 게시글 상세정보보기, 수정하기위한 정보보기 -->
+<resultMap type="trip.review.dto.ReviewDto" id="detailMap" autoMapping="false">
+	<result column="rv_rv_num" property="rvNum"/>
+	<result column="rv_title" property="rvTitle"/>
+	<result column="rv_contents" property="rvContents"/>
+	<result column="rv_reg_date" property="rvRegDate"/>
+	<result column="rv_read_count" property="rvReadCount"/>
+	<result column="rv_image" property="rvImage"/>
+	<result column="rv_writer" property="rvWriter"/>
+	<result column="rv_u_id" property="uId"/>
+	<result column="rv_m_id" property="mId"/>
+	<collection property="rpList" javaType="java.util.List"
+	 ofType="trip.review.dto.ReplyDto" autoMapping="false">
+		<id column="rp_num" property="rpNum"/>
+		<result column="rp_contents" property="rpContents"/>
+		<result column="rp_reg_date" property="rpRegDate"/>
+		<result column="rp_rv_num" property="rvNum"/>
+		<result column="rp_writer" property="rpWriter"/>
+		<result column="rp_u_id" property="uId"/>
+		<result column="rp_m_id" property="mId"/>
+	</collection>
+</resultMap>
+<select id="reviewDetail" parameterType="int" resultMap="detailMap">
+	SELECT rv.rv_num AS rv_rv_num, 
+		   rv.rv_title, 
+		   rv.rv_contents, 
+		   rv.rv_reg_date, 
+		   rv.rv_read_count, 
+		   rv.rv_image,
+		   rv.rv_writer,
+		   rv.u_id AS rv_u_id,
+		   rv.m_id AS rv_m_id, 
+	       rp.rp_num, 
+	       rp.rp_contents, 
+	       rp.rp_reg_date,
+	       rp.rv_num AS rp_rv_num, 
+	       rp.rp_writer,
+	       rp.u_id AS rp_u_id,
+	       rp.m_id AS rp_m_id
+	FROM review rv, reply rp
+	WHERE rv.rv_num = rp.rv_num(+)
+	AND rv.rv_num = #{rvNum}
+	ORDER BY rp.rp_num ASC
+</select>
+
+<!-- 조회수 증가 -->
+<update id="increaseReadCount" parameterType="int">
+	UPDATE review 
+	SET
+	rv_read_count = rv_read_count+1
+	WHERE rv_num = #{rvNum}
+</update>
+
+<!-- 게시글 작성 -->
+<insert id="reviewWrite" parameterType="trip.review.dto.ReviewDto"> 
+	INSERT INTO review 
+	(rv_num, rv_title, rv_contents, rv_image, rv_reg_date, rv_writer, u_id, m_id)
+	VALUES 
+	(review_rv_num_seq.NEXTVAL, #{rvTitle}, #{rvContents}, #{rvImage, jdbcType=VARCHAR}, sysdate, #{rvWriter}, #{uId, jdbcType=VARCHAR}, #{mId, jdbcType=VARCHAR})
+</insert>
+
+<!-- 게시글 수정 -->
+<update id="reviewUpdate" parameterType="trip.review.dto.ReviewDto">
+	UPDATE review 
+	SET rv_title = #{rvTitle}, rv_contents = #{rvContents}
+	<if test="rvImage != null">
+	,rv_image = #{rvImage}
+	</if>
+	WHERE rv_num = #{rvNum}
+</update>
+
+<!-- 게시글에 있는 파일명 가져오기 -->
+<select id="selectFileName" parameterType="int" resultType="string">
+	SELECT rv_image
+	FROM review
+	WHERE rv_num = #{rvNum}
+</select>
+
+<!-- 게시글 삭제 -->
+<delete id="reviewDelete" parameterType="int">
+	DELETE FROM review
+	WHERE rv_num = #{rvNum}
+</delete>
+
+<!-- 여기서 부터 댓글관련 -->
+<!-- 댓글 작성 -->
+<insert id="replyWrite" parameterType="trip.review.dto.ReplyDto">
+	INSERT INTO reply
+	(rp_num, rp_contents, rp_reg_date, rv_num, rp_writer, u_id, m_id) 
+	VALUES 
+	(reply_rp_num_seq.NEXTVAL, #{rpContents}, sysdate, #{rvNum}, #{rpWriter}, #{uId, jdbcType=VARCHAR}, #{mId, jdbcType=VARCHAR})
+</insert>
+
+<!-- 댓글 리스트 전체가져오기(댓글 추가, 수정, 삭제 했을 때 댓글만 ajax로 처리되어 뿌려줘야하니까 필요함) -->
+<resultMap type="trip.review.dto.ReplyDto" id="replyListMap">
+	<result column="rp_num" property="rpNum"/>
+	<result column="rp_contents" property="rpContents"/>
+	<result column="rp_reg_date" property="rpRegDate"/>
+	<result column="rp_writer" property="rpWriter"/>
+	<result column="u_id" property="uId"/>
+	<result column="m_id" property="mId"/>
+</resultMap>
+<select id="replyList" parameterType="int" resultMap="replyListMap">
+	SELECT rp_num, rp_contents, rp_reg_date, rp_writer, u_id, m_id 
+	FROM reply
+	WHERE rv_num = #{rvNum}
+	ORDER BY rp_num ASC
+</select>
+
+<!-- 댓글 수정 -->
+<update id="replyUpdate" parameterType="trip.review.dto.ReplyDto">
+	UPDATE reply 
+	SET rp_contents = #{rpContents}
+	WHERE rp_num = #{rpNum}
+</update>
+
+<!-- 댓글 삭제 -->
+<delete id="replyDelete" parameterType="trip.review.dto.ReplyDto">
+	DELETE FROM reply
+	WHERE rp_num = #{rpNum}
+</delete>
+
+</mapper>
+
+
+
+
+
+

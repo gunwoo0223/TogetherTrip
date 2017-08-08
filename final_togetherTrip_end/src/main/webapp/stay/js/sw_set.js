@@ -1,0 +1,14 @@
+$(document).ready(function(){
+	$('#image-gallery').lightSlider({
+		gallery:true,
+		item:1,
+		tumbItem:3,
+		sliderMargin:0,
+		speed:1200,
+		auto:true,
+		loop:true,
+		onSliderLoad:function(){
+			$('#image-gallery').removeClass('cS-hidden');
+		}
+	});
+});

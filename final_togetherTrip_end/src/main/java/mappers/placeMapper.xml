@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper    
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="place">
+	
+	<resultMap type="trip.place.dto.PlaceDto" id="p_page">		<!-- PlaceDto와 PlaceImgDTO 두 가가지를 사용하기 위하여 resultMap을 사용해야 함. -->
+		 <result column="p_num" property="p_num"/>
+		 <result column="p_title" property="p_title"/>
+		 <result column="p_loc" property="p_loc"/>
+		 <result column="p_state" property="p_state"/>
+		 <result column="p_city" property="p_city"/>
+		 <result column="p_time" property="p_time"/>
+		 <result column="p_holiday" property="p_holiday"/>
+		 <result column="p_tel" property="p_tel"/>
+		 <result column="p_contents" property="p_contents"/>
+		 <result column="p_reg_date" property="p_reg_date"/>
+		 <result column="p_read_count" property="p_read_count"/>
+		 <collection property="pImage" javaType="java.util.List" ofType="trip.place.dto.PlaceImgDto">
+		 	<result column="p_thumbnail" property="p_thumbnail"/>
+			<result column="p_img1" property="p_img1"/>
+			<result column="p_img2" property="p_img2"/>
+			<result column="p_img3" property="p_img3"/>
+		 </collection>
+	</resultMap>
+	<select id="list" resultMap="p_page" parameterType="trip.place.dto.PageDto">
+		<![CDATA[
+		select b.* from(
+		select rownum as rm, a.* from(
+		select p.p_num, p.p_title, p.p_loc, p.p_state, p.p_city, p.p_time, p.p_holiday, p.p_tel, p.p_contents, p.p_reg_date, p.p_read_count, i.p_thumbnail, i.p_img1, i.p_img2, i.p_img3 from place p, place_img i where p.p_num=i.p_num ORDER BY p.p_num DESC)a)b
+		where b.rm>=#{startRow} and b.rm<=#{endRow}
+		]]>
+	</select>
+	
+	<select id="placeCnt" resultType="int">
+		select count(*) from place
+	</select>
+	
+	<update id="readcount" parameterType="int">
+		update place
+		set p_read_count=p_read_count+1
+		where p_num=#{p_num}
+	</update>
+	
+	<select id="list2" resultMap="p_page" parameterType="int">
+		select * from place p, place_img i
+		where p.p_num=i.p_num
+		and p.p_num=#{p_num}
+	</select>
+	
+	<select id="map" resultType="String" parameterType="int">
+		select p_state
+		from place
+		where p_num=#{p_num}
+	</select>
+	
+	<!-- 좋아요 데이터 넣기 -->
+	<insert id="insertGood" parameterType="trip.place.dto.GoodDto">
+		INSERT INTO good
+		(g_num, u_id, p_num) VALUES 
+		(good_g_num_seq.NEXTVAL, #{u_id}, #{p_num})
+	</insert>
+	
+	<!-- 좋아요 개수 가져오기 -->
+	<select id="selectGoodCount" parameterType="trip.place.dto.GoodDto" resultType="int">
+		SELECT count(*)
+		FROM good
+		WHERE p_num=#{p_num}
+	</select>
+	
+	<!-- 좋아요 눌렀는지 검사 -->
+	<select id="checkGood" parameterType="trip.place.dto.GoodDto" resultType="int">
+		SELECT count(*)
+		FROM good
+		WHERE p_num = #{p_num} 
+		AND u_id = #{u_id}
+	</select>
+	
+</mapper>
+
+
+
+
+
+ 
+
+
+
+
+
+

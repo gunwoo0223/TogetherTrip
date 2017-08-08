@@ -1,0 +1,299 @@
+@CHARSET "UTF-8";
+
+* {
+	margin: 0;
+	padding: 0;
+}
+
+div {
+	display: block;
+}
+
+ul {
+	list-style: none;
+	list-style-type: none;
+}
+
+span {
+	margin-right: 5px;
+}
+
+.topic-area p {
+	width: 130px;
+	float: left;
+}
+
+.category {
+	position: absolute;
+	left: 30px;
+	top: 30px;
+}
+
+.area-section {
+	height: 350px;
+	background-color: #47698c;
+	position: relative;
+	padding: 15px;
+	margin-top: 10px;
+}
+
+.area-title {
+	width: 200px;
+	height: 97px;
+	background:
+		url(http://tong.visitkorea.or.kr/img/vk/kor/bz15/travel_plus/find_title_1.png);
+}
+
+.topic-section {
+	width: 100%;
+	height: 180px;
+	background-color: #2c7f97;
+	position: relative;
+	padding: 15px;
+}
+
+.topic-title {
+	width: 215px;
+	height: 97px;
+	background:
+		url(http://tong.visitkorea.or.kr/img/vk/kor/bz15/travel_plus/find_title_2.png);
+}
+
+.topic-area {
+	position: relative;
+	margin-left: 320px;
+}
+
+.topic-area p {
+	margin: 0;
+	margin-right: 30px;
+}
+
+.area-map {
+	background:
+		url(http://tong.visitkorea.or.kr/img/vk/kor/bz15/travel_plus/find_map.png);
+	width: 219px;
+	height: 301px;
+	float: left;
+	margin-left: 320px;
+	position: relative;
+}
+
+.area-map ul li {
+	position: absolute;
+}
+
+.area-map ul li button {
+	border: 0;
+	background: 0;
+	color: white;
+	outline-color: orange;
+}
+
+.area-category {
+	position: relative;
+	width: 480px;
+	float: left;
+	margin-left: 40px;
+}
+
+.area-category ul li {
+	display: inline-block;
+}
+
+.area-category ul li button {
+	min-width: 62px;
+	border: 1;
+	border-style: solid;
+	border-color: #8eafd2;
+	background: 0;
+	color: white;
+	outline-color: orange;
+	border-radius: 3px;
+	margin: 3px;
+	padding: 10px 0;
+}
+
+.area-category-result {
+	width: 480px;
+	height: 57px;
+}
+
+.area-category p {
+	color: white;
+	margin: 0;
+	width: 480px;
+	height: 57px;
+	text-align: center;
+	background: #547fac;
+	font-size: 16px;
+	border-radius: 3px;
+	line-height: 50px;
+}
+
+.search-reset-button {
+	text-align: center;
+	margin-top: 10px;
+}
+
+.search-reset-button input[type="submit"] {
+	height: auto;
+	padding: 8px 10px 8px 30px;
+	text-align: left;
+	border-width: 0;
+	border-radius: 3px;
+	color: white;
+	background: #e8030d
+		url(http://tong.visitkorea.or.kr/img/vk/kor/bz15/common/icon_submit_buttons.png)
+		no-repeat;
+	line-height: 1em;
+	background-position: 11px 9px;
+}
+
+.search-reset-button button {
+	height: auto;
+	padding: 8px 10px 8px 30px;
+	text-align: left;
+	border-width: 0;
+	border-radius: 3px;
+	color: white;
+	background: #303f61
+		url(http://tong.visitkorea.or.kr/img/vk/kor/bz15/common/icon_submit_buttons.png)
+		no-repeat;
+	line-height: 1em;
+	background-position: 11px -36px;
+}
+
+.icon1 {
+	left: 5px;
+	top: 50px;
+}
+
+.icon2 {
+	left: 45px;
+	top: 55px;
+}
+
+.icon3 {
+	left: 80px;
+	top: 65px;
+}
+
+.icon4 {
+	left: 110px;
+	top: 40px;
+}
+
+.icon5 {
+	left: 15px;
+	top: 110px;
+}
+
+.icon6 {
+	left: 50px;
+	top: 105px;
+}
+
+.icon7 {
+	left: 90px;
+	top: 98px;
+}
+
+.icon8 {
+	left: 65px;
+	top: 130px;
+}
+
+.icon9 {
+	left: 135px;
+	top: 120px;
+}
+
+.icon10 {
+	left: 50px;
+	top: 165px;
+}
+
+.icon11 {
+	left: 120px;
+	top: 160px;
+}
+
+.icon12 {
+	left: 40px;
+	top: 200px;
+}
+
+.icon13 {
+	left: 20px;
+	top: 230px;
+}
+
+.icon14 {
+	left: 100px;
+	top: 190px;
+}
+
+.icon15 {
+	left: 165px;
+	top: 175px;
+}
+
+.icon16 {
+	left: 140px;
+	top: 200px;
+}
+
+.icon17 {
+	left: 20px;
+	top: 280px;
+}
+
+#container-top {
+	width: 100%;
+	margin: 0;
+}
+
+.sub_location {
+	z-index: 110;
+	top: 0;
+	left: 0;
+	width: 100%;
+	background: #102b6b;
+	z-index: 102;
+	height: 60px;
+}
+
+.sub_location .wrapper {
+	margin: 0 auto;
+	width: 1170px;
+}
+
+.sub_location li {
+	float: left;
+	vertical-align: middle;
+	margin: 0;
+	padding: 0
+}
+
+.sub_location .location {
+	float: left;
+	padding-left: 15px;
+}
+
+.sub_location .location li a {
+	display: block;
+	padding: 20px 0 20px 30px;
+	background:
+		url(http://tong.visitkorea.or.kr/img/vk/kor/bz15/travel/trv_list/view/sub_loca_arw.gif)
+		no-repeat;
+	color: #fff
+}
+
+.sub_location .location li a.home {
+	background:
+		url(http://tong.visitkorea.or.kr/img/vk/kor/bz15/travel/trv_list/view/sub_loca_home.png)
+		no-repeat 50% 50%;
+	font-size: 0;
+	margin-top: 10px;
+}

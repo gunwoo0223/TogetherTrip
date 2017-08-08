@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper    
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="user">
+
+<insert id="join" parameterType="trip.user.dto.UserDto">
+	INSERT INTO users (u_id, u_pw, u_name, u_gender, u_phone, u_email, u_address, u_birth)
+	VALUES (#{uId}, #{uPw}, #{uName}, #{uGender}, #{uPhone}, #{uEmail}, #{uAddress}, #{uBirth})
+</insert>
+
+<select id="idChk" parameterType="string" resultType="int">
+	SELECT count(*)
+	FROM users
+	WHERE u_id = #{uId}
+</select>
+
+<resultMap type="String" id="userName">
+	<result column="u_name" property="uName"/>
+</resultMap>
+<select id="userLogin" parameterType="trip.user.dto.UserDto" resultMap="userName">
+	SELECT u_name
+	FROM users
+	WHERE u_id = #{uId} AND u_pw = #{uPw} AND u_withdraw = 'N'
+</select>
+
+<resultMap type="String" id="managerName">
+	<result column="m_name" property="mName"/>
+</resultMap>
+<select id="managerLogin" parameterType="trip.user.dto.ManagerDto" resultMap="managerName">
+	SELECT m_name
+	FROM manager
+	WHERE m_id = #{mId} AND m_pw = #{mPw}
+</select>
+
+<resultMap type="trip.user.dto.UserDto" id="userInfoOne">
+	<result column="u_id" property="uId"/>
+	<result column="u_pw" property="uPw"/>
+	<result column="u_name" property="uName"/>
+	<result column="u_gender" property="uGender"/>
+	<result column="u_phone" property="uPhone"/>
+	<result column="u_email" property="uEmail"/>
+	<result column="u_address" property="uAddress"/>
+	<result column="u_birth" property="uBirth"/>
+	<result column="u_withdraw" property="uWithdraw"/>
+</resultMap>
+<select id="userInfo" parameterType="string" resultMap="userInfoOne">
+	SELECT * 
+	FROM users 
+	WHERE u_id = #{sessionUId}
+</select>
+
+<update id="updateUserInfo" parameterType="trip.user.dto.UserDto">
+	UPDATE users
+	SET u_id = #{uId}, u_name = #{uName}, 
+		u_pw = #{uPw}, u_gender = #{uGender},
+	    u_birth = #{uBirth}, u_address = #{uAddress}, 
+	    u_phone = #{uPhone}, u_email = #{uEmail}
+</update>
+
+<select id="userChk" parameterType="trip.user.dto.UserDto" resultType="int">
+	SELECT count(*)
+	FROM users
+	WHERE u_id = #{uId} AND u_pw = #{uPw}
+</select>
+
+<update id="withdraw" parameterType="trip.user.dto.UserDto">
+	UPDATE users 
+	SET u_withdraw = 'Y'
+	WHERE u_id = #{uId}
+</update>
+
+<select id="userReviewCount" parameterType="String" resultType="int">
+	SELECT count(*) FROM review
+	WHERE u_id = #{uId}
+</select>
+
+<resultMap type="trip.review.dto.ReviewDto" id="userReviewInfoMap">
+	<result column="rv_num" property="rvNum"/>
+	<result column="rv_title" property="rvTitle"/>
+	<result column="rv_writer" property="rvWriter"/>
+	<result column="rv_reg_date" property="rvRegDate"/>
+	<result column="rv_read_count" property="rvReadCount"/>
+</resultMap>
+<select id="userReviewInfo" parameterType="map" resultMap="userReviewInfoMap">
+	<!-- SELECT rv_num, rv_title, rv_writer, rv_reg_date, rv_read_count
+	FROM review
+	WHERE u_id = #{uId} -->
+	<![CDATA[
+		SELECT b.* FROM(
+		SELECT rownum as rm, a.* FROM(
+		SELECT rv_num, rv_title, rv_writer, rv_reg_date, rv_read_count FROM review WHERE u_id = #{uId} ORDER BY rv_num DESC)a)b
+		WHERE b.rm >= #{pgdto.startRow} AND b.rm <= #{pgdto.endRow}
+	]]>
+</select>
+
+<!-- place 관심정보 페이징처리를 위해 개수 가져오는 쿼리 -->
+<select id="interestedPlaceCount" resultType="int" parameterType="string">
+	SELECT count(*)
+	FROM good g, place p
+	WHERE g.p_num = p.p_num
+	AND g.u_id = #{uId}
+</select>
+
+<select id="interestedPlace" resultType="trip.user.dto.InterestedPlaceDto" parameterType="map">
+	<!-- SELECT pi.p_thumbnail, p.p_title, p.p_loc, p.p_tel, p.p_num, g.g_num
+	FROM place p, place_img pi, good g
+	WHERE p.p_num = g.p_num
+	AND p.p_num = pi.p_num
+	AND g.u_id = #{uId}
+	ORDER BY g.g_num ASC -->
+	<![CDATA[
+		SELECT b.* FROM(
+		SELECT rownum as rm, a.* FROM(
+		SELECT pi.p_thumbnail, p.p_title, p.p_loc, p.p_tel, p.p_num, g.g_num
+		FROM place p, place_img pi, good g
+		WHERE p.p_num = g.p_num
+		AND p.p_num = pi.p_num
+		AND g.u_id = #{uId}
+		ORDER BY g.g_num ASC)a)b
+		WHERE b.rm >= #{pgdto.startRow} AND b.rm <= #{pgdto.endRow}
+	]]>
+</select>
+
+<!-- restaurant 관심정보 페이징처리를 위해 개수 가져오는 쿼리 -->
+<select id="interestedRestaurantCount" resultType="int" parameterType="string">
+	SELECT count(*)
+	FROM good g, restaurant r
+	WHERE g.r_num = r.r_num
+	AND g.u_id = #{uId}
+</select>
+
+<select id="interestedRestaurant" resultType="trip.user.dto.InterestedRestaurantDto" parameterType="map">
+	<!-- SELECT ri.r_thumbnail, r.r_title, r.r_menu, r.r_tel, r.r_num, g.g_num
+	FROM restaurant r, restaurant_img ri, good g
+	WHERE r.r_num = g.r_num
+	AND r.r_num = ri.r_num
+	AND g.u_id = #{uId}
+	ORDER BY g.g_num ASC -->
+	<![CDATA[
+		SELECT b.* FROM(
+		SELECT rownum as rm, a.* FROM(
+		SELECT ri.r_thumbnail, r.r_title, r.r_menu, r.r_tel, r.r_num, g.g_num
+		FROM restaurant r, restaurant_img ri, good g
+		WHERE r.r_num = g.r_num
+		AND r.r_num = ri.r_num
+		AND g.u_id = #{uId}
+		ORDER BY g.g_num ASC)a)b
+		WHERE b.rm >= #{pgdto.startRow} AND b.rm <= #{pgdto.endRow}
+	]]>
+</select>
+
+<!-- festival 관심정보 페이징처리를 위해 개수 가져오는 쿼리 -->
+<select id="interestedFestivalCount" resultType="int" parameterType="string">
+	SELECT count(*)
+	FROM good g, festival f
+	WHERE g.f_num = f.f_num
+	AND g.u_id = #{uId}
+</select>
+
+<select id="interestedFestival" resultType="trip.user.dto.InterestedFestivalDto" parameterType="map">
+	<!-- SELECT fi.f_thumbnail, f.f_title, f.f_time, f.f_loc, f.f_num, g.g_num
+	FROM festival f, festival_img fi, good g
+	WHERE f.f_num = g.f_num
+	AND f.f_num = fi.f_num
+	AND g.u_id = #{uId}
+	ORDER BY g.g_num ASC -->
+	<![CDATA[
+		SELECT b.* FROM(
+		SELECT rownum as rm, a.* FROM(
+		SELECT fi.f_thumbnail, f.f_title, f.f_time, f.f_loc, f.f_num, g.g_num
+		FROM festival f, festival_img fi, good g
+		WHERE f.f_num = g.f_num
+		AND f.f_num = fi.f_num
+		AND g.u_id = #{uId}
+		ORDER BY g.g_num ASC)a)b
+		WHERE b.rm >= #{pgdto.startRow} AND b.rm <= #{pgdto.endRow}
+	]]>
+</select>
+
+<!-- stay 관심정보 페이징처리를 위해 개수 가져오는 쿼리 -->
+<select id="interestedStayCount" resultType="int" parameterType="string">
+	SELECT count(*)
+	FROM good g, stay s
+	WHERE g.s_num = s.s_num
+	AND g.u_id = #{uId}
+</select>
+
+<select id="interestedStay" resultType="trip.user.dto.InterestedStayDto" parameterType="map">
+	<!-- SELECT si.s_thumbnail, s.s_title, s.s_loc, s.s_tel, s.s_num, g.g_num
+	FROM stay s, stay_img si, good g
+	WHERE f.f_num = g.s_num
+	AND s.s_num = si.s_num
+	AND g.u_id = #{uId}
+	ORDER BY g.g_num ASC -->
+	<![CDATA[
+		SELECT b.* FROM(
+		SELECT rownum as rm, a.* FROM(
+		SELECT si.s_thumbnail, s.s_title, s.s_loc, s.s_tel, s.s_num, g.g_num
+		FROM stay s, stay_img si, good g
+		WHERE f.f_num = g.s_num
+		AND s.s_num = si.s_num
+		AND g.u_id = #{uId}
+		ORDER BY g.g_num ASC)a)b
+		WHERE b.rm >= #{pgdto.startRow} AND b.rm <= #{pgdto.endRow}
+	]]>
+</select>
+
+</mapper>
+
+
+
+
+

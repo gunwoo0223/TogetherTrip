@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper    
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="main">
+	<select id="placeData" resultType="trip.place.dto.PlaceImgDto">
+		<![CDATA[
+			SELECT p_thumbnail, p_num
+			FROM place_img
+			WHERE rownum <= 3
+			ORDER BY p_num DESC		
+		]]>
+	</select>
+	
+	<select id="restaurantData" resultType="trip.restaurant.dto.RestaurantImgDto">
+		<![CDATA[
+			SELECT r_thumbnail, r_num
+			FROM restaurant_img
+			WHERE rownum <= 3
+			ORDER BY r_num DESC		
+		]]>
+	</select>
+
+	<select id="festivalData" resultType="trip.festival.dto.FestivalImgDto">
+		<![CDATA[
+			SELECT f_thumbnail, f_num
+			FROM festival_img
+			WHERE rownum <= 3
+			ORDER BY f_num DESC		
+		]]>
+	</select>
+	
+	<select id="stayData" resultType="trip.stay.dto.StayImgDto">
+		<![CDATA[
+			SELECT s_thumbnail, s_num
+			FROM stay_img
+			WHERE rownum <= 3
+			ORDER BY s_num DESC		
+		]]>
+	</select>
+</mapper>

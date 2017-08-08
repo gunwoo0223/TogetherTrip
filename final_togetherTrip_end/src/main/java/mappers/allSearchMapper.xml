@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper    
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="allSearch">
+	<!-- 지역의 전체를 불러올때 데이터수 카운트 -->
+	<select id="getAllCount" resultType="int" parameterType="String">
+		SELECT (p.place_count + r.restaurant_count + s.stay_count + f.festival_count) as total_count
+		FROM
+		(SELECT count(*) as place_count FROM place 
+		WHERE p_state = #{locName} OR p_city = #{locName})p,
+		(SELECT count(*) as restaurant_count FROM restaurant 
+		WHERE r_state = #{locName} OR r_city = #{locName})r,
+		(SELECT count(*) as stay_count FROM stay 
+		WHERE s_state = #{locName} OR s_city = #{locName})s,
+		(SELECT count(*) as festival_count FROM festival 
+		WHERE f_state = #{locName} OR f_city = #{locName})f
+	</select>
+
+	<!-- 상세지역을 불러올때 데이터수 카운트 -->
+	<select id="getCount" parameterType="hashmap" resultType="int">
+		SELECT count(*) FROM ${tableName}
+		WHERE
+		<choose>
+			<when test='tableName == "place"'>
+				p_city = #{locName} OR p_state = #{locName}
+			</when>
+			<when test='tableName == "stay"'>
+				s_city = #{locName} OR s_state = #{locName}
+			</when>
+			<when test='tableName == "restaurant"'>
+				r_city = #{locName} OR r_state = #{locName}
+			</when>
+			<when test='tableName == "festival"'>
+				f_city = #{locName} OR f_state = #{locName}
+			</when>
+		</choose>
+	</select>
+
+	<select id="getAllList" resultType="trip.allSearch.dto.AllSearchDto" parameterType="hashmap">
+	
+		SELECT b.* FROM(
+		SELECT rownum as rm, a.* FROM(
+		<choose>
+			<when test="tableName == 'all'">
+				SELECT p.p_num as num, p.p_city as city, p.p_state as state, p.p_title as title, p.p_contents as contents, i.p_thumbnail as thumbnail
+				p.p_tel as tel, p.p_loc as loc
+				FROM place p, place_img i WHERE p.p_num = i.p_num AND p_state = #{locName} OR p_city = #{locName}
+				UNION ALL
+				SELECT s.s_num as num, s.s_city as city, s.s_state as state, s.s_title as title, s.s_contents as contents, i.s_thumbnail as thumbnail
+				s.s_tel as tel, s.s_loc as loc
+				FROM stay s, stay_img i WHERE s.s_num = i.s_num AND s_state = #{locName} OR s_city = #{locName}
+				UNION ALL
+				SELECT r.r_num as num, r.r_city as city, r.r_state as state, r.r_title as title, r.r_contents as contents, i.r_thumbnail as thumbnail
+				FROM restaurant r, restaurant_img i WHERE r.r_num = i.r_num AND r_state = #{locName} OR r_city = #{locName}
+				UNION ALL
+				SELECT f.f_num as num, f.f_city as city, f.f_state as state, f.f_title as title, f.f_contents as contents, i.f_thumbnail as thumbnail
+				f.f_tel as tel, f.f_loc as loc
+				FROM festival f, festival_img i WHERE f.f_num = i.f_num AND f_state = #{locName} OR f_city = #{locName}
+			</when>
+			<when test="tableName == 'place'">
+				SELECT p.p_num, p.p_city, p.p_state, p.p_title, p.p_contents, p.p_tel, p.p_loc, i.p_thumbnail
+				FROM place p, place_img i WHERE p.p_num = i.p_num
+				AND p_state = #{locName} OR p_city = #{locName}
+				ORDER BY p.p_reg_date DESC
+			</when>
+			<when test="tableName == 'restaurant'">
+				SELECT r.r_num, r_city, r_state, r_title, r_contents, r.r_tel, r.r_loc, i.r_thumbnail
+				FROM restaurant r, restaurant_img i WHERE r.r_num = i.r_num
+				AND r_state = #{locName} OR r_city = #{locName}
+				ORDER BY r.r_reg_date DESC
+			</when>
+			<when test="tableName == 'stay'">
+				SELECT s.s_num, s.s_city, s.s_state, s.s_title, s.s_loc, s.s_tel, s.s_contents, i.s_thumbnail
+				FROM stay s, stay_img i WHERE s.s_num = i.s_num 
+				AND s.s_state = #{locName} OR s.s_city = #{locName}
+				ORDER BY s.s_reg_date DESC
+			</when>
+			<when test="tableName == 'festival'">
+				SELECT f.f_num, f_city, f_state, f_title, f.f_loc, f.f_tel, f_contents, i.f_thumbnail
+				FROM festival f, festival_img i WHERE f.f_num = i.f_num
+				AND f_state = #{locName} OR f_city = #{locName}
+				ORDER BY f.f_reg_date DESC
+			</when>
+		</choose>
+		)a)b
+	<![CDATA[
+		WHERE b.rm >= #{pv.startRow} AND b.rm <= #{pv.endRow}
+	]]>
+	</select>
+	
+	<select id="getAllStateList" resultType="trip.allSearch.dto.AllSearchDto"
+		parameterType="hashmap">
+		SELECT b.* FROM(
+		SELECT rownum as rm, a.* FROM(
+		SELECT 
+		<choose>
+			<when test="tableName == 'place'">
+				p.p_num, p.p_city, p.p_state, p.p_title, p.p_contents, p.p_tel, p.p_loc, i.p_thumbnail
+				FROM place p, place_img i WHERE p.p_num = i.p_num
+				AND p_state = #{stateName}
+				ORDER BY p.p_reg_date DESC
+			</when>
+			<when test="tableName == 'restaurant'">
+				r.r_num, r.r_city, r.r_state, r.r_title, r.r_contents, r.r_tel, r.r_loc, i.r_thumbnail
+				FROM restaurant r, restaurant_img i WHERE r.r_num = i.r_num 
+				AND r_state = #{stateName}
+				ORDER BY r.r_reg_date DESC
+			</when>
+			<when test="tableName == 'stay'">
+				s.s_num, s.s_city, s.s_state, s.s_title, s.s_contents, s.s_tel, s.s_loc, i.s_thumbnail
+				FROM stay s, stay_img i WHERE s.s_num = i.s_num 
+				AND s_state = #{stateName}
+				ORDER BY s.s_reg_date DESC
+			</when>
+			<when test="tableName == 'festival'">
+				f.f_num, f.f_city, f.f_state, f.f_title, f.f_contents, f.f_loc, f.f_tel, i.f_thumbnail
+				FROM festival f, festival_img i WHERE f.f_num = i.f_num
+				AND f_state = #{stateName}
+				ORDER BY f.f_reg_date DESC
+			</when>
+		</choose>
+		)a)b
+		<![CDATA[
+			WHERE b.rm >= #{pv.startRow} AND b.rm <= #{pv.endRow}
+		]]>
+	</select>
+	
+	<select id="getCityList" resultType="trip.allSearch.dto.AllSearchDto"
+		parameterType="hashmap">
+		SELECT b.* FROM(
+		SELECT rownum as rm, a.* FROM(
+		SELECT
+		<choose>
+			<when test='tableName == "place"'>
+				p.P_NUM, p.P_CITY, p.P_STATE, p.P_TITLE, p.P_CONTENTS, p.P_TEL, p.P_LOC, i.P_THUMBNAIL
+			</when>
+			<when test='tableName == "stay"'>
+				s.S_NUM, s.S_CITY, s.S_STATE, s.S_TITLE, s.S_CONTENTS, s.S_TEL, s.S_LOC, i.S_THUMBNAIL
+			</when>
+			<when test='tableName == "restaurant"'>
+				r.R_NUM, r.R_CITY, r.R_STATE, r.R_TITLE, r.R_CONTENTS, r.R_TEL, r.R_LOC, i.R_THUMBNAIL
+			</when>
+			<when test='tableName == "festival"'>
+				f.F_NUM, f.F_CITY, f.F_STATE, f.F_TITLE, f.F_CONTENTS, f.F_TEL, f.F_LOC, i.F_THUMBNAIL
+			</when>
+		</choose>
+
+		FROM
+		<choose>
+			<when test="tableName == 'place'">
+				place p, place_img i
+			</when>
+			<when test="tableName == 'restaurant'">
+				restaurant r, restaurant_img i
+			</when>
+			<when test="tableName == 'stay'">
+				stay s, stay_img i
+			</when>
+			<when test="tableName == 'festival'">
+				festival f, festival_img i
+			</when>
+		</choose>
+		WHERE
+		<choose>
+			<when test='tableName == "place"'>
+				p_city = #{cityName}
+			</when>
+			<when test='tableName == "stay"'>
+				s_city = #{cityName}
+			</when>
+			<when test='tableName == "restaurant"'>
+				r_city = #{cityName}
+			</when>
+			<when test='tableName == "festival"'>
+				f_city = #{cityName}
+			</when>
+		</choose>
+		ORDER BY
+		<choose>
+			<when test='tableName == "place"'>
+				P_REG_DATE DESC
+			</when>
+			<when test='tableName == "stay"'>
+				s.S_REG_DATE DESC
+			</when>
+			<when test='tableName == "restaurant"'>
+				R_REG_DATE DESC
+			</when>
+			<when test='tableName == "festival"'>
+				F_REG_DATE DESC
+			</when>
+		</choose>
+		)a)b
+	<![CDATA[ 
+		WHERE b.rm >= #{pv.startRow} AND b.rm <= #{pv.endRow}
+	]]>
+	</select>
+
+	<!-- <select id="getStayList" resultType="trip.stay.dto.StayDto"
+		parameterType="trip.allSearch.dto.PageDTO">
+	<![CDATA[
+		SELECT b.* FROM(
+		SELECT rownum as rm, a.* FROM(
+		SELECT * FROM stay ORDER BY s_reg_date DESC)a)b
+		WHERE b.rm >= #{startRow} and b.rm <= #{endRow}
+	]]>
+	</select>
+
+	<select id="getRestaurantList" resultType="trip.restaurant.dto.RestaurantDto"
+		parameterType="trip.allSearch.dto.PageDTO">
+	<![CDATA[
+		SELECT b.* FROM(
+		SELECT rownum as rm, a.* FROM(
+		SELECT * FROM restaurant ORDER BY r_reg_date DESC)a)b
+		WHERE b.rm >= #{startRow} and b.rm <= #{endRow}
+	]]>
+	</select>
+
+	<select id="getPlaceList" resultType="trip.place.dto.PlaceDto"
+		parameterType="trip.allSearch.dto.PageDTO">
+	<![CDATA[
+		SELECT b.* FROM(
+		SELECT rownum as rm, a.* FROM(
+		SELECT * FROM place ORDER BY p_reg_date DESC)a)b
+		WHERE b.rm >= #{startRow} and b.rm <= #{endRow}
+	]]>
+	</select>
+
+	<select id="getFestivalList" resultType="trip.festival.dto.FestivalDto"
+		parameterType="trip.allSearch.dto.PageDTO">
+	<![CDATA[
+		SELECT b.* FROM(
+		SELECT rownum as rm, a.* FROM(
+		SELECT * FROM festival ORDER BY f_reg_date DESC)a)b
+		WHERE b.rm >= #{startRow} and b.rm <= #{endRow}
+	]]>
+	</select> -->
+
+	<!-- <resultMap type="trip.allSearch.dto.AllSearchDto" id="select_result">
+		<result property="p_state" column="P_STATE" />
+		<result property="p_city" column="P_CITY" />
+		<result property="s_state" column="S_STATE" />
+		<result property="s_city" column="S_CITY" />
+		<result property="r_state" column="R_STATE" />
+		<result property="r_city" column="R_CITY" />
+		<result property="f_state" column="F_STATE" />
+		<result property="f_city" column="F_CITY" />
+
+		<collection property="placeDto" column="P_CITY" javaType="java.util.List"
+			ofType="trip.place.dto.PlaceDto" select="getPlace" />
+		<collection property="restaurantDto" column="R_CITY"
+			javaType="java.util.List" ofType="trip.restaurant.dto.RestaurantDto"
+			select="getRestaurant" />
+		<collection property="StayDto" column="S_CITY" javaType="java.util.List"
+			ofType="trip.stay.dto.StayDto" select="getStay" />
+		<collection property="festivalDto" column="F_CITY"
+			javaType="java.util.List" ofType="trip.festival.dto.FestivalDto"
+			select="getFestival" />
+	</resultMap>
+
+	<select id="getArea" parameterType="hashmap" resultMap="select_result">
+		SELECT
+		p_state, p_city, s_state, s_city, r_state, r_city, f_state, f_city
+		FROM ${tableName}
+		WHERE p_city = #{cityName} OR s_city = #{cityName} OR
+		r_city = #{cityName}
+		OR f_city = #{cityName}
+	</select>
+
+	<select id="getPlace" resultType="trip.place.dto.PlaceDto">
+		SELECT * FROM place
+		WHERE p_city
+		= #{P_CITY}
+	</select>
+
+	<select id="getStay" resultType="trip.stay.dto.StayDto">
+		SELECT * FROM stay
+		WHERE s_city =
+		#{S_CITY}
+	</select>
+
+	<select id="getRestaurant" resultType="trip.restaurant.dto.RestaurantDto">
+		SELECT * FROM restaurant
+		WHERE r_city = #{R_CITY}
+	</select>
+
+	<select id="getFestival" resultType="trip.festival.dto.FestivalDto">
+		SELECT * FROM festival
+		WHERE
+		f_city = #{F_CITY}
+	</select>
+
+	//////////////////////////////////////////////////////////////////////////
+	<resultMap type="trip.allSearch.dto.AllSearchDto" id="select_AllResult">
+		<result property="p_state" column="P_STATE" />
+		<result property="p_city" column="P_CITY" />
+
+		<collection property="restaurantDto" column="P_STATE"
+			javaType="java.util.List" ofType="trip.restaurant.dto.RestaurantDto"
+			select="getAllRestaurant" />
+		<collection property="StayDto" column="P_STATE" javaType="java.util.List"
+			ofType="trip.stay.dto.StayDto" select="getAllStay" />
+		<collection property="festivalDto" column="P_STATE"
+			javaType="java.util.List" ofType="trip.festival.dto.FestivalDto"
+			select="getAllFestival" />
+	</resultMap>
+
+	<select id="getAllArea" parameterType="String" resultMap="select_AllResult">
+		SELECT
+		p_state, p_city FROM place
+		WHERE p_state = #{stateName}
+	</select>
+
+	<select id="getAllStay" resultType="trip.stay.dto.StayDto">
+		SELECT * FROM stay
+		WHERE
+		s_state = #{P_STATE}
+	</select>
+
+	<select id="getAllRestaurant" resultType="trip.restaurant.dto.RestaurantDto">
+		SELECT * FROM
+		restaurant
+		WHERE r_state = #{P_STATE}
+	</select>
+
+	<select id="getAllFestival" resultType="trip.festival.dto.FestivalDto">
+		SELECT * FROM festival
+		WHERE f_state = #{P_STATE}
+	</select> -->
+</mapper>

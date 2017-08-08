@@ -1,0 +1,331 @@
+@CHARSET "UTF-8";
+@charset "utf-8";
+
+#wrap{min-width:1100px;overflow:hidden;}
+
+.ng-scope{display:block}
+script.ng-scope,input[type="hidden"].ng-scope{display:none}
+
+#reload{display:none;position:fixed;z-index:1000;top:50%;left:50%;margin:-60px 0 0 -60px}
+
+#curtain{position:relative}
+#container{width:100%}
+
+.go-layout{width:1100px;margin:0 auto}
+.go-layout:after{content:"";clear:both;display:block}
+.go-ir{display:block;width:100%;height:100%;overflow:hidden}
+.go-ir:before{content:"";display:block;width:100%;height:100%}
+.go-button{display:block;padding:0;background:transparent;border-width:0}
+
+
+#header{position:relative;z-index:910;border-top:2px solid #072d87}
+#header .go-layout{position:relative;height:37px}
+	#logo{width:116px;height:116px;margin:-2px 0 0 -9px}
+	#logo a{background:url(http://tong.visitkorea.or.kr/img/vk/kor/bz15/common/logo.png) no-repeat}
+
+	#util{position:absolute;top:2px;right:310px}
+	#util:after{content:"";clear:both;display:block}
+	#util li{float:left;margin-left:20px}
+	#util li a{display:block;height:37px;line-height:37px;font-size:12px;color:#000}
+	#util li a:hover,
+	#util li a:focus{color:#333}
+	
+	#util .language{position:relative} 
+	#util .language>a{position:relative;z-index:10}
+	#util .language ul{display:none;position:absolute;top:0;left:-48px;width:180px;padding:33px 0 10px;border:1px solid #dedede;background:#fff}                
+	#util .language ul li{float:none;margin:0 10px;border-top:1px dotted #dedede}
+	#util .language ul li:first-child{padding-top:10px;border-top-style:solid}
+	#util .language ul li a{display:block;height:auto;padding:10px 13px;line-height:1}
+	#util .language ul li a[target]:after{content:"";display:inline-block;width:11px;height:11px;margin-left:5px;vertical-align:top;background:url(http://tong.visitkorea.or.kr/img/vk/kor/bz15/common/util_blank.gif) no-repeat}
+	
+	#util .korea{padding:0 0 0 20px;background:url(http://tong.visitkorea.or.kr/img/vk/kor/bz15/common/util_korea.gif) no-repeat 0 50%}
+
+	#util .language>a:after,
+	#util .korea:after{content:"";display:inline-block;width:11px;height:11px;margin-left:6px;vertical-align:middle;background:url(http://tong.visitkorea.or.kr/img/vk/kor/bz15/common/util_window.gif) no-repeat}
+	#util .korea:after{background-image:url(http://tong.visitkorea.or.kr/img/vk/kor/bz15/common/util_blank.gif)}
+
+	#gsearch{position:absolute;top:2px;right:100px;width:190px;border-left:1px solid #e2e2e2;background:#f4f4f4}
+	#gsearch label{position:absolute;top:9px;left:10px;font-size:12px;color:#000}
+	#gsearch input{float:left;border-width:0}
+	#gsearch input[type="text"],
+	#gsearch input[type="search"]{width:155px;height:35px;padding:0;line-height:35px;text-indent:10px;background:transparent}
+	#gsearch input[type="submit"]{width:35px;height:35px;padding:0;font-size:0;overflow:hidden;background:url(http://tong.visitkorea.or.kr/img/vk/kor/bz15/common/gsearch_open.gif) no-repeat -7px 0}
+	#gsearch .myKeyword{display:none;position:absolute;z-index:1000;top:35px;left:-1px;width:100%;border:1px solid #e2e2e2;background:#fff}
+	#gsearch .myKeyword b{display:block;margin:0 10px;padding:7px 0;border-bottom:1px solid #dedede}
+	#gsearch .myKeyword ul{padding:7px 10px}
+	#gsearch .myKeyword ul li{overflow:hidden;font-size:12px}
+	#gsearch .myKeyword ul li a{float:left}
+	#gsearch .myKeyword ul li button{float:right;color:#f00}
+	#gsearch .myKeyword .exit{display:block;padding:3px;text-align:center;font-size:12px;border-top:1px solid #dedede}
+
+
+#footer{padding:30px 0;font-size:12px;border-top:1px solid #3f4d6d;background:#1e2d50;color:#bcc0cb}
+#footer .go-layout{position:relative}
+
+#footer li{float:left}
+#footer li a{display:block;color:#bcc0cb}
+
+	#futil{}
+	#futil:after{content:"";clear:both;display:block}
+	#futil li{margin-right:20px}
+	#futil li a{padding:5px 0;color:#fff}
+	#futil li a:hover,
+	#futil li a:focus{padding-bottom:4px;border-bottom:1px solid #fff}
+
+	#published{margin-top:10px}
+	#published p{margin-top:5px}
+
+	#output{position:absolute;top:0;right:88px}
+	#output:after{content:"";clear:both;display:block}
+
+	#output li{margin-left:13px}
+	#output li span,
+	#output li a{height:53px;background:url(/img/vk/kor/bz15/common/output_ico.png) no-repeat}
+
+	#output .icon1{width:53px}
+	#output .icon1 span{background-position:0 0}
+
+	#output .icon2{width:84px} 
+	#output .icon2 span{background-position:-60px 0}
+
+	#output .icon3{width:53px}
+	#output .icon3 a{background:url(http://tong.visitkorea.or.kr/img/vk/kor/bz15/common/insta.png) no-repeat}
+
+	#output .icon4{width:49px}
+	#output .icon4 a{background-position:-227px 0}
+
+	#output .icon5{width:49px}
+	#output .icon5 a{background-position:-290px 0}
+
+	#output .icon6{width:49px}
+	#output .icon6 a{background-position:-354px 0}
+
+	#output .icon7{width:49px}
+	#output .icon7 a{background-position:-419px 0}
+ 
+	#output .icon8{width:53px}
+	#output .icon8 a{background-position:-484px 0}
+
+	#output .icon9{width:53px}
+	#output .icon9 a{background-position:-553px 0}
+	
+	#output .icon10{width:53px}
+	#output .icon10 a{background:url(http://tong.visitkorea.or.kr/img/vk/kor/bz15/common/post.png) no-repeat}
+	
+	#output .icon11{width:53px}
+	#output .icon11 a{background:url(http://tong.visitkorea.or.kr/img/vk/kor/bz15/common/brunch.png) no-repeat}
+	
+	#output{position:absolute;top:0;right: 0px;}
+	#output_line2{ position:absolute; top:67px; right:0;}
+	#output_line2 ul li.icon9 a{ background:url(/img/vk/kor/bz15/common/output_ico.png) no-repeat;  height:53px;background-position:-553px 0; }
+	#output_line2 ul li.icon8 a{background:url(/img/vk/kor/bz15/common/output_ico.png) no-repeat;height:53px; background-position: -484px 0;width: 63px;}
+
+#gnb{position:relative;z-index:900;height:82px;border-top:1px solid #e9e9e9}
+	#gnbwrap{position:absolute;top:0;left:0;width:100%;height:82px;border-bottom:1px solid #dedede}
+		#animate{height:82px;overflow:hidden;border-bottom:1px solid #dedede;background:#fff}
+
+			#topmenu{position:relative;float:right}
+			#topmenu li{}
+			#topmenu li a{display:block}
+
+			#topmenu .th1{float:left} 
+			#topmenu .th1>a{min-width:138px;padding:24px 10px 29px;text-align:center;font-weight:700;font-size:19px;color:#000}
+
+			#topmenu .th1>a.current,
+			#topmenu .th1>a:hover,
+			#topmenu .th1>a:focus{padding:20px 9px 29px;border:solid #dedede;border-width:4px 1px 0 1px;border-top-color:#3085b9;background:#f4f4f4 url(http://tong.visitkorea.or.kr/img/vk/kor/bz15/common/gnb_th1_current.gif) no-repeat 50% 100%;color:#072d87}
+
+			#topmenu .th2{padding:0 10px 20px}
+			#topmenu .th2>li{position:relative}
+			#topmenu .th2>li>a{padding:5px 0 5px 20px;background:url(http://tong.visitkorea.or.kr/img/vk/kor/bz15/common/gnb_th2_bullet.gif) no-repeat 10px 50%}
+
+			#topmenu .th2>li>a.ov,
+			#topmenu .th2>li>a:hover,
+			#topmenu .th2>li>a:focus{padding-bottom:4px;border-bottom:1px solid #d90f18;background:url(http://tong.visitkorea.or.kr/img/vk/kor/bz15/common/gnb_th2_bullet_ov.gif) no-repeat 5px 50%;color:#d90f18}
+			
+			#topmenu .th1>a.current+.th2,
+			#topmenu .th1>a:hover+.th2,
+			#topmenu .th1>a:focus+.th2{padding:0 9px 20px;border:solid #dedede;border-width: 0 1px;background:#f4f4f4}
+			
+			#topmenu .th3{padding:10px 0 10px 20px;border:1px solid #dedede;background-color:#fff}
+			#topmenu .th3>li{}
+			#topmenu .th3>li a:before{display:inline-block;vertical-align:middle;margin-right:5px}
+		
+			#topmenu .th2>li>a.ov{padding-bottom:4px;border-bottom:1px solid #d90f18}
+			#topmenu .functionTh3{height:0;overflow:hidden}
+
+
+#popupzone{position:relative;z-index:920;background:#1e356a}
+#popupzone .go-layout{position:relative}
+#popupzone .wrapper{position:relative;width:100%;height:0;display:none}
+
+#popupzone .buttonSet{position:absolute;bottom:-38px;right:0;height:36px;font-size:12px}
+#popupzone .buttonSet button{width:100px;height:36px;padding-left:15px;text-align:left;border:solid #e2e2e2;border-width:0 1px 1px 1px}
+#popupzone .buttonSet button:after{content:"";position:absolute;top:50%;right:15px;width:7px;height:8px;margin-top:-4px;background:url(http://tong.visitkorea.or.kr/img/vk/kor/bz15/common/popup_ico.gif) no-repeat}
+#popupzone .buttonSet [data-type="open"]:after{background-position:0 100%}
+#popupzone .buttonSet [data-type="close"]{display:none;background-position:0 0}
+
+/*사이즈가 지정되지 않은 팝업존 두개 기준 400 으로 제작 하면 총장 840 중 400 이고 팝업 이미지 간격 우 20 으로 두개 총합 840 으로 일치 */
+#popupzone .grap{position:relative;width:830px;margin:0 50px;overflow:hidden}
+#popupzone .grap .obj{position:relative;width:10000px;height:100%;}
+#popupzone .grap .obj li{float:left;margin-right:20px}
+#popupzone .grap .obj li a{display:block;font-size:13px;letter-spacing:-1px;overflow:hidden}
+#popupzone .grap .obj li strong{color:#f2c118}
+#popupzone .grap .obj li p{color:#fff}
+
+/* 사이즈를 지정한 팝업존
+#popupzone .grap{position:relative;width:830px;padding:30px 0;margin:0 50px;overflow:hidden}
+#popupzone .grap .obj{position:relative;width:10000px;height:100%;overflow:hidden}
+#popupzone .grap .obj li{float:left;margin-right:20px}
+#popupzone .grap .obj li a{display:block;width:400px;font-size:13px;letter-spacing:-1px;overflow:hidden}
+#popupzone .grap .obj li strong{color:#f2c118}
+#popupzone .grap .obj li p{color:#fff}
+#popupzone .grap .obj li.single a{width:840px} 
+*/
+#popupzone .grap .obj .thumb{float:left;background:transparent;line-height: 120px;}
+#popupzone .grap .obj .thumb img{width:auto;vertical-align: middle;height:auto !important;}
+#popupzone .grap .obj .pt{padding-left:100px; display:none;}
+
+#popupzone .control{position:absolute;top:0;left:0;width:930px}
+#popupzone .control button[data-type]{position:absolute;top:45px;width:40px;height:47px;background:url(http://tong.visitkorea.or.kr/img/vk/kor/bz15/common/btn_popupzone_control.png) no-repeat}
+#popupzone .control button[data-type="stop"]{left:-70px;background-position:0 0}
+#popupzone .control button[data-type="play"]{left:-70px;background-position:-218px 0;display:none}
+#popupzone .control button[data-type="prev"]{left:0;background-position:-47px 0}
+#popupzone .control button[data-type="next"]{right:0;background-position:-94px 0}
+
+#popupzone .todayClose{position:absolute;top:52px;right:0;padding:7px 37px 7px 20px;font-size:13px;letter-spacing:-1px;background:url(http://tong.visitkorea.or.kr/img/vk/kor/bz15/common/icon_popupzone_today.png) no-repeat 120px 50%;color:#fff}
+#popupzone .todayClose.selected{background:url(http://tong.visitkorea.or.kr/img/vk/kor/bz15/common/icon_popupzone_today_ov.png) no-repeat 120px 50%}
+#popupzone .more{position:absolute;top:45px;right:-70px;width:40px;height:47px;background:url(http://tong.visitkorea.or.kr/img/vk/kor/bz15/common/btn_popupzone_control.png) no-repeat -155px 0}
+
+/* #mainSection3 , #mainSection4 */
+.commonBanner {border-top:1px solid}
+.commonBanner h1{float:left;width:82px;margin-top:30px}
+
+.commonBanner .control{float:left;margin:33px 40px 0}
+.commonBanner .control button{float:left;width:26px;height:17px;background:url(http://tong.visitkorea.or.kr/img/vk/kor/bz15/main/banner_control.png) no-repeat}
+.commonBanner .control button[data-type="stop"]{background-position:7px 0}
+.commonBanner .control button[data-type="play"]{background-position:-132px 0;display:none}
+.commonBanner .control button[data-type="prev"]{background-position:-24px 0}
+.commonBanner .control button[data-type="next"]{background-position:-56px 0}
+.commonBanner .control button[data-type="flip"]{background-position:-87px 0}
+
+.commonBanner .grap{float:left;width:834px;height:90px;overflow:hidden}
+.commonBanner .grap .obj{width:100%;overflow:hidden}
+.commonBanner .grap .obj li{float:left}
+.commonBanner .grap .obj li a{display:block}
+
+.commonBanner[id="mainSection3"]{border-color:#d9dce3}
+.commonBanner[id="mainSection4"]{border-color:#3f4d6d;background:#303f61}
+
+.commonBanner[id="mainSection3"] h1{}
+.commonBanner[id="mainSection4"] h1{color:#fff}
+
+.commonBanner[id="mainSection4"] .control button[data-type="stop"]{background-position:7px -17px}
+.commonBanner[id="mainSection4"] .control button[data-type="play"]{background-position:-132px 0;display:none}
+.commonBanner[id="mainSection4"] .control button[data-type="prev"]{background-position:-24px -17px}
+.commonBanner[id="mainSection4"] .control button[data-type="next"]{background-position:-56px -17px}
+.commonBanner[id="mainSection4"] .control button[data-type="flip"]{background-position:-87px -17px}
+
+#mainSection3 .grap .obj{margin-left:1px}
+#mainSection3 .grap .obj .item{width:277px;height:90px;margin-left:-1px;border:solid #d9d9d9;border-width:0 1px}
+#mainSection3 .grap .obj .item a{display:block;height:100%;background:url(http://tong.visitkorea.or.kr/img/vk/kor/bz15/main/ms3_ico.gif) no-repeat 95% 50%}
+#mainSection3 .grap .obj .item a:before{content:"";display:inline-block;height:100%;vertical-align:middle}
+#mainSection3 .grap .obj .item i{display:block;margin-top:5px;font-size:20px;color:#d93507}
+#mainSection3 .grap .obj .item span{display:inline-block;line-height:1;padding-left:20px;vertical-align:middle}
+
+#mainSection4 .grap .obj{margin-left:1px}
+#mainSection4 .grap .obj .item{width:33.3%;height:65px;padding-top:25px}
+#mainSection4 .grap .obj .item:before{content:"";display:inline-block;height:15px;vertical-align:middle;margin-left:-1px;border-left:1px solid #bcc0cb}
+#mainSection4 .grap .obj .item:first-child:before{display:none}
+#mainSection4 .grap .obj .item a{display:inline-block;padding:5px 0;margin:0 20px;font-size:15px;color:#fff}
+#mainSection4 .grap .obj .item a:hover,
+#mainSection4 .grap .obj .item a:focus{padding-bottom:4px;border-bottom:1px solid #fff;color:#fff}
+#mainSection4 .grap .obj .item a[target]{padding-right:15px;background:url(http://tong.visitkorea.or.kr/img/vk/kor/bz15/main/ms4_ico.gif) no-repeat 100% 50%}
+
+
+/*서브 로케이션*/
+.sub_location{position:absolute;z-index:110;top:0;left:0;width:100%;background:#102b6b;z-index:102}
+.sub_location:after{content:"";clear:both;display:block}
+.sub_location h2{display:none;}
+.sub_location h2.logo{position:absolute;top:0;left:50%;margin-left:-614px;width:64px;height:64px;background:url(http://tong.visitkorea.or.kr/img/vk/kor/bz15/travel/trv_list/view/sub_loca_logo.gif) no-repeat;}
+.sub_location .wrapper{margin:0 auto;width:1100px;}
+.sub_location .wrapper:after{display:block;clear:both;content:'';}
+.sub_location li{float:left;vertical-align:middle;margin: 0;padding: 0}
+
+.sub_location .location{float:left;}
+.sub_location .location li a{display:block;padding:20px 0 20px 30px;background:url(http://tong.visitkorea.or.kr/img/vk/kor/bz15/travel/trv_list/view/sub_loca_arw.gif) no-repeat ;color:#fff}
+.sub_location .location li a.home{background:url(http://tong.visitkorea.or.kr/img/vk/kor/bz15/travel/trv_list/view/sub_loca_home.png) no-repeat 50% 50%;font-size:0;}
+.sub_location .location li a.last{color:#fff;font-size:20px;font-weight:700;}
+
+.sub_location .button_wrap{float:right}
+.sub_location .linkButton{float:left;margin:13px 15px 0}
+.sub_location .linkButton a{display:block;padding:7px 15px 7px 40px;border-radius:3px;border:1px solid #6e6ec3;background:#072d87 url(http://tong.visitkorea.or.kr/img/vk/kor/bz15/common/icon_linkbutton.gif) no-repeat 13px 50%;color:#fff}
+.sub_location .linkButton a:hover,
+.sub_location .linkButton a:focus{border-color:#fff}
+ 
+.sub_location .btn_box{float:left;margin-top:16px}
+.sub_location .btn_box li{position:relative}
+.sub_location .btn_box li a{display:block;width:36px;height:38px;background:url(http://tong.visitkorea.or.kr/img/vk/kor/bz15/travel/trv_list/view/sub_loca_ico.png) no-repeat 0 0}
+
+.sub_location .btn_box .info{margin-left:0;padding:5px 32px 5px 13px;width:auto;background-position:89px -269px;border:1px solid #f0ed15;border-radius:3px;color:#f0ed15}
+.sub_location .btn_box .print{background:url(http://tong.visitkorea.or.kr/img/vk/kor/bz15/travel/trv_list/view/20160302_icon2.png)}
+.sub_location .btn_box .print:hover{background:url(http://tong.visitkorea.or.kr/img/vk/kor/bz15/travel/trv_list/view/20160302_icon2_on.png)}
+.sub_location .btn_box .list{background:url(http://tong.visitkorea.or.kr/img/vk/kor/bz15/travel/trv_list/view/20160302_icon3.png)}
+.sub_location .btn_box .list:hover{background:url(http://tong.visitkorea.or.kr/img/vk/kor/bz15/travel/trv_list/view/20160302_icon3_on.png)}
+
+.sub_location .btn_box .share>a{margin:0;background:url(http://tong.visitkorea.or.kr/img/vk/kor/bz15/travel/trv_list/view/20160302_icon1.png)}
+.sub_location .btn_box .share>a:hover{margin:0;background:url(http://tong.visitkorea.or.kr/img/vk/kor/bz15/travel/trv_list/view/20160302_icon1_on.png)}
+.sub_location .btn_box .share ul{display:none;position:absolute;top:0;left:-175px;width:130px;padding:5px 13px;border-radius:5px;border:1px solid #fff;background:#1d4791}
+.sub_location .btn_box .share ul:after{content:"";position:absolute;top:10px;right:-10px;border:5px solid transparent;border-left-color:#fff}
+.sub_location .btn_box .share ul li{float:none;margin:10px 0}
+.sub_location .btn_box .share ul li a{width:auto;height:auto;margin:0;padding:0;overflow:hidden;font-size:15px;background:transparent;color:#fff}
+.sub_location .btn_box .share ul li a:before{content:"";display:inline-block;width:20px;height:20px;margin-right:10px;vertical-align:middle;border:1px solid transparent;background:url(http://tong.visitkorea.or.kr/img/vk/kor/bz15/common/icon_sns.png) no-repeat -40px 0}
+.sub_location .btn_box .share ul li:first-child a:before{background-position:0 0}
+
+.sub_location .btn_box li a.ov,
+.sub_location .btn_box li a:hover,
+.sub_location .btn_box li a:focus,
+.sub_location .btn_box .share ul li a:hover:before,
+.sub_location .btn_box .share ul li a:focus:before{border-color:#fff}
+.sub_location .btn_box .share ul li a:hover,
+.sub_location .btn_box .share ul li a:focus{border-color:transparent}
+
+#kakaostory-share-button{}
+#kakaostory-share-button a{}
+#kakaostory-share-button a img{float:left;width:20px;height:20px;margin-right:10px;border:1px solid transparent}
+#kakaostory-share-button a:hover img,
+#kakaostory-share-button a:focus img{border-color:#fff}
+#kakaostory-share-button a:before{display:none}
+#kakaostory-share-button a:after{content:"카카오스토리"}
+
+/* 타이틀바 리스트화면 */
+#location .sub_location_list { background:#1d4791 }
+#location .sub_location_list .location li a{display:block;margin:0;padding:20px 30px 20px 10px;background:url(http://tong.visitkorea.or.kr/img/vk/kor/bz15/common/sub_loca_arw.png) right no-repeat;color:#fff;font-size:13px;}
+#location .sub_location_list .location li a.home{ margin-left: 20px; background:url(http://tong.visitkorea.or.kr/img/vk/kor/bz15/common/sub_home_arw.png) no-repeat 50% 50%; text-indent: -9999px; overflow: hidden;}
+
+
+@media (min-width : 1280px){
+.sub_location h2{display:block}
+}
+
+
+/* 섬네일 */
+
+.pic,.thumb,.course_thumb,.thumbWrap .obj{background:#6e7d9a url(http://tong.visitkorea.or.kr/img/vk/kor/bz15/common/icon_not.png) no-repeat 50% 50%}
+.pic img,.thumb img,.course_thumb img{width:100%;max-width:none}
+
+
+
+#accessibilityMark{position:absolute;top:0;right:0}
+
+
+
+
+#popupzone{}
+#popupzone .grap{position:relative;width:300%;height:120px;margin-left:-100%;padding:0;}
+#popupzone .grap .obj{position:relative;width:100%;height:100%}
+#popupzone .grap .obj li{position:absolute;top:0;left:0;right:0;height:100%;text-align:center}
+#popupzone .grap .obj li a{display:inline-block;width:auto;height:100%;margin-right:170px;font-size:13px;letter-spacing:-1px;overflow:hidden}
+#popupzone .grap .obj .thumb{float:none;}
+
+#popupzone .control{z-index:10}

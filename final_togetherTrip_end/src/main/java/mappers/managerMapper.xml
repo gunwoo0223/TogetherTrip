@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper    
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="manager">
+
+	<!-- place -->
+
+	<!-- 페이징처리를 위한 게시글 총 수 -->
+	<select id="placeCount" resultType="int">
+		SELECT count(*) FROM place
+	</select>
+
+	<!-- place 게시글 리스트 가져오기 -->
+	<select id="placeList" resultType="trip.place.dto.PlaceDto" parameterType="trip.place.dto.PageDto">
+	<!-- SELECT p_num, p_title, p_reg_date, m_id, p_read_count
+	FROM place 
+	ORDER BY p_num DESC -->
+	<![CDATA[
+		SELECT b.* FROM(
+		SELECT rownum as rm, a.* FROM(
+		SELECT p_num, p_title, p_reg_date, m_id, p_read_count FROM place ORDER BY p_num DESC)a)b
+		WHERE b.rm >= #{startRow} AND b.rm <= #{endRow}
+	]]>
+	</select>
+	
+	<resultMap type="trip.place.dto.PlaceDto" id="place">
+		 <result column="p_num" property="p_num"/>
+		 <result column="p_title" property="p_title"/>
+		 <result column="p_loc" property="p_loc"/>
+		 <result column="p_state" property="p_state"/>
+		 <result column="p_city" property="p_city"/>
+		 <result column="p_time" property="p_time"/>
+		 <result column="p_holiday" property="p_holiday"/>
+		 <result column="p_tel" property="p_tel"/>
+		 <result column="p_contents" property="p_contents"/>
+		 <result column="p_reg_date" property="p_reg_date"/>
+		 <result column="p_read_count" property="p_read_count"/>
+		 <result column="m_id" property="m_id"/>
+		 <collection property="pImage" javaType="java.util.List" ofType="trip.place.dto.PlaceImgDto">
+		 	<result column="p_thumbnail" property="p_thumbnail"/>
+			<result column="p_img1" property="p_img1"/>
+			<result column="p_img2" property="p_img2"/>
+			<result column="p_img3" property="p_img3"/>
+			<result column="p_num" property="p_num"/>
+		 </collection>
+	</resultMap>
+	<select id="placeSelect" parameterType="int" resultMap="place">
+		SELECT * FROM place p, place_img pi
+		WHERE p.p_num = pi.p_num
+		AND p.p_num=#{p.p_num}
+	</select>
+	
+	<insert id="placeInsert" parameterType="map">
+	INSERT ALL
+	INTO place 
+	(p_num,p_title,p_loc,p_state,p_city,p_time,p_holiday,p_contents,p_tel,p_reg_date,m_id)
+	VALUES 
+	(place_p_num_seq.nextval,#{pdto.p_title},#{pdto.p_loc},#{pdto.p_state},
+	#{pdto.p_city},#{pdto.p_time},#{pdto.p_holiday},#{pdto.p_contents},#{pdto.p_tel},sysdate, #{mId})
+	INTO place_img 
+	(p_num,p_thumbnail,p_img1,p_img2,p_img3)
+	VALUES 
+	(place_p_num_seq.nextval,#{pidto.p_thumbnail,jdbcType=VARCHAR},#{pidto.p_img1,jdbcType=VARCHAR}
+	,#{pidto.p_img2,jdbcType=VARCHAR},#{pidto.p_img3,jdbcType=VARCHAR})
+	SELECT * FROM DUAL
+	</insert>
+	
+	<update id="placeUpdate" parameterType="map">
+		UPDATE place
+		SET p_title=#{pdto.p_title},p_loc=#{pdto.p_loc},
+			p_state=#{pdto.p_state},p_city=#{pdto.p_city},
+			p_time=#{pdto.p_time},p_holiday=#{pdto.p_holiday},p_tel=#{pdto.p_tel},
+			p_contents=#{pdto.p_contents}
+		WHERE p_num=#{pdto.p_num}
+	</update>
+	
+	<update id="placeImgUpdate" parameterType="map">
+	UPDATE place_img
+	<set> <!-- set을 사용하면 동적으로 콤마,를 지워준다. -->
+		<if test="pidto.p_thumbnail != null">p_thumbnail=#{pidto.p_thumbnail},</if>
+		<if test="pidto.p_img1 != null">p_img1=#{pidto.p_img1},</if>
+		<if test="pidto.p_img2 != null">p_img2=#{pidto.p_img2},</if>
+		<if test="pidto.p_img3 != null">p_img3=#{pidto.p_img3},</if>
+		p_num = #{pidto.p_num} <!-- 만약 위에 아무것도 조건이 안걸리면 set이 없는 상황이 되버리니까 어짜피 안바뀔 p_num을 바뀌는것처럼 설정, 실제적으로는 의미없는 코드임. -->
+	</set>
+	WHERE p_num=#{pidto.p_num} 
+	</update>
+	
+	<select id="placeAllImg" resultType="trip.place.dto.PlaceImgDto" parameterType="int">
+	SELECT * FROM place_img
+	WHERE p_num=#{p_num}
+	</select>
+	
+	<delete id="placeDel" parameterType="int">
+	DELETE FROM place WHERE p_num=#{p_num}
+	</delete>
+	
+	
+	<!-- festival -->
+	
+	<!-- 페이징처리를 위한 게시글 총 수 -->
+	<select id="festivalCount" resultType="int">
+		SELECT count(*) FROM festival
+	</select>
+	
+	<!-- festival 게시글 리스트 가져오기 -->
+	<select id="festivalList" resultType="trip.festival.dto.FestivalDto" parameterType="trip.festival.dto.PageDto">
+	<!-- SELECT f_num,f_title,f_reg_date,m_id,f_read_count
+	FROM festival
+	ORDER BY f_num DESC -->
+	<![CDATA[
+		SELECT b.* FROM(
+		SELECT rownum as rm, a.* FROM(
+		SELECT f_num,f_title,f_reg_date,m_id,f_read_count FROM festival ORDER BY f_num DESC)a)b
+		WHERE b.rm >= #{startRow} AND b.rm <= #{endRow}
+	]]>
+	</select>
+	
+	<resultMap type="trip.festival.dto.FestivalDto" id="festival">
+		<result column="f_num" property="f_num"/>
+		<result column="f_title" property="f_title"/>
+		<result column="f_loc" property="f_loc"/>
+		<result column="f_state" property="f_state"/>
+	    <result column="f_city" property="f_city"/>
+		<result column="f_time" property="f_time"/>
+		<result column="f_contents" property="f_contents"/>
+		<result column="f_tel" property="f_tel"/>
+		<result column="f_reg_date" property="f_reg_date"/>
+		<result column="f_read_count" property="f_read_count"/>
+		<result column="m_id" property="m_id"/>
+ 		<collection property="fImage" javaType="java.util.List" ofType="trip.festival.dto.FestivalImgDto">
+			<result column="f_thumbnail" property="f_thumbnail"/>		
+			<result column="f_img1" property="f_img1"/>
+			<result column="f_img2" property="f_img2"/>
+			<result column="f_img3" property="f_img3"/>
+		    <result column="f_num" property="f_num"/>
+		</collection> 
+	</resultMap>
+	<select id="festivalSelect" parameterType="int" resultMap="festival">
+		SELECT * from festival f, festival_img i
+		WHERE f.f_num = i.f_num 
+		AND f.f_num=#{f.f_num}
+	</select>
+	
+	<insert id="festivalInsert" parameterType="map">
+	INSERT ALL
+	INTO festival 
+	(f_num,f_title,f_loc,f_state,f_city,f_time,f_contents,f_tel,f_reg_date,m_id)
+	VALUES 
+	(festival_f_num_seq.nextval,#{fdto.f_title},#{fdto.f_loc}
+	,#{fdto.f_state},#{fdto.f_city},#{fdto.f_time}
+	,#{fdto.f_contents},#{fdto.f_tel},sysdate, #{mId})
+	INTO festival_img 
+	(f_num,f_thumbnail,f_img1,f_img2,f_img3)
+	VALUES 
+	(festival_f_num_seq.nextval,#{fidto.f_thumbnail,jdbcType=VARCHAR},#{fidto.f_img1,jdbcType=VARCHAR}
+	,#{fidto.f_img2,jdbcType=VARCHAR},#{fidto.f_img3,jdbcType=VARCHAR})
+	SELECT * FROM DUAL
+	</insert>
+	
+	<update id="festivalUpdate" parameterType="map">
+		UPDATE festival
+		SET f_title=#{fdto.f_title},f_loc=#{fdto.f_loc},
+			f_state=#{fdto.f_state},f_city=#{fdto.f_city},
+			f_time=#{fdto.f_time},f_tel=#{fdto.f_tel},
+			f_contents=#{fdto.f_contents}
+		WHERE f_num=#{fdto.f_num}
+	</update>
+	
+	<update id="festivalImgUpdate" parameterType="map">
+	UPDATE festival_img
+	<set>
+		<if test="f_thumbnail != null">f_thumbnail=#{fidto.f_thumbnail},</if>
+		<if test="f_img1 != null">f_img1=#{fidto.f_img1},</if>
+		<if test="f_img2 != null">f_img2=#{fidto.f_img2},</if>
+		<if test="f_img3 != null">f_img3=#{fidto.f_img3},</if>
+		f_num = #{fidto.f_num}
+	</set>
+	WHERE f_num=#{fidto.f_num}
+	</update>
+	
+	<select id="festivalAllImg" resultType="trip.festival.dto.FestivalImgDto" parameterType="int">
+	SELECT * FROM festival_img
+	WHERE f_num=#{f_num}
+	</select>
+	
+	<delete id="festivalDel" parameterType="int">
+	DELETE FROM festival WHERE f_num=#{f_num}
+	</delete>
+	
+	
+	<!-- stay -->
+	
+	<!-- 페이징처리를 위한 게시글 총 수 -->
+	<select id="stayCount" resultType="int">
+		SELECT count(*) FROM stay
+	</select>
+	
+	<!-- stay 게시글 리스트 가져오기 -->
+	<select id="stayList" resultType="trip.stay.dto.StayDto" parameterType="trip.stay.dto.PageDto">
+	<!-- SELECT s_num,s_title,s_reg_date,m_id,s_read_count
+	FROM stay
+	ORDER BY s_num DESC -->
+	<![CDATA[
+		SELECT b.* FROM(
+		SELECT rownum as rm, a.* FROM(
+		SELECT s_num,s_title,s_reg_date,m_id,s_read_count FROM stay ORDER BY s_num DESC)a)b
+		WHERE b.rm >= #{startRow} AND b.rm <= #{endRow}
+	]]>
+	</select>
+	
+	<insert id="stayInsert" parameterType="trip.stay.dto.StayDto">
+	INSERT INTO stay
+	(s_num,s_title,s_loc,s_state,s_city,s_time,s_tel,s_contents,s_reg_date,s_type,m_id)
+	VALUES(stay_s_num_seq.nextval,#{s_title},#{s_loc},#{s_state},#{s_city},#{s_time},
+	#{s_tel},#{s_contents},sysdate,#{s_type},#{m_id})
+	</insert>
+	
+	
+	<!-- restaurant -->
+	
+	<!-- 페이징처리를 위한 게시글 총 수 -->
+	<select id="restaurantCount" resultType="int">
+		SELECT count(*) FROM restaurant
+	</select>
+	
+	<!-- restaurant 게시글 리스트 가져오기 -->
+	<select id="restaurantList" resultType="trip.restaurant.dto.RestaurantDto" parameterType="trip.restaurant.dto.PageDto">
+	<!-- SELECT r_num,r_title,r_reg_date,m_id,r_read_count
+	FROM restaurant
+	ORDER BY r_num DESC -->
+	<![CDATA[
+		SELECT b.* FROM(
+		SELECT rownum as rm, a.* FROM(
+		SELECT r_num,r_title,r_reg_date,m_id,r_read_count FROM restaurant ORDER BY r_num DESC)a)b
+		WHERE b.rm >= #{startRow} AND b.rm <= #{endRow}
+	]]>
+	</select>
+	
+	<resultMap type="trip.restaurant.dto.RestaurantDto" id="restaurant">
+		 <result column="r_num" property="r_num"/>
+		 <result column="r_title" property="r_title"/>
+		 <result column="r_loc" property="r_loc"/>
+		 <result column="r_state" property="r_state"/>
+		 <result column="r_city" property="r_city"/>
+		 <result column="r_time" property="r_time"/>
+		 <result column="r_holiday" property="r_holiday"/>
+		 <result column="r_tel" property="r_tel"/>
+		 <result column="r_menu" property="r_menu"/>
+		 <result column="r_contents" property="r_contents"/>
+		 <result column="r_reg_date" property="r_reg_date"/>
+		 <result column="r_read_count" property="r_read_count"/>
+		 <result column="m_id" property="m_id"/>
+		 <collection property="rImage" javaType="java.util.List" ofType="trip.restaurant.dto.RestaurantImgDto">
+		 	<result column="r_thumbnail" property="r_thumbnail"/>
+			<result column="r_img1" property="r_img1"/>
+			<result column="r_img2" property="r_img2"/>
+			<result column="r_img3" property="r_img3"/>
+			<result column="r_num" property="r_num"/>
+		 </collection>
+	</resultMap>
+	<select id="restaurantSelect" parameterType="int" resultMap="restaurant">
+		SELECT * FROM restaurant r, restaurant_img ri
+		WHERE r.r_num = ri.r_num
+		AND r.r_num=#{r.r_num}
+	</select>
+	
+	<insert id="restaurantInsert" parameterType="map">
+	INSERT ALL 
+	INTO restaurant
+	(r_num,r_title,r_loc,r_state,r_city,r_time,r_holiday,r_tel,r_contents,
+	r_reg_date,r_menu,m_id)
+	VALUES(restaurant_r_num_seq.nextval,#{rdto.r_title}, #{rdto.r_loc}, #{rdto.r_state}, #{rdto.r_city},
+	#{rdto.r_time}, #{rdto.r_holiday}, #{rdto.r_tel}, #{rdto.r_contents}, sysdate, #{rdto.r_menu}, #{mId})
+	INTO restaurant_img
+	(r_num, r_thumbnail, r_img1, r_img2, r_img3)
+	VALUES(restaurant_r_num_seq.nextval, #{ridto.r_thumbnail}, #{ridto.r_img1}, 
+	#{ridto.r_img2}, #{ridto.r_img3})
+	SELECT * FROM DUAL
+	</insert>
+	
+	<update id="restaurantUpdate" parameterType="map">
+		UPDATE restaurant
+		SET r_title=#{rdto.r_title},r_loc=#{rdto.r_loc},
+			r_state=#{rdto.r_state},r_city=#{rdto.r_city},
+			r_time=#{rdto.r_time},r_holiday=#{rdto.r_holiday},r_tel=#{rdto.r_tel},
+			r_contents=#{rdto.r_contents}, r_menu=#{rdto.r_menu}
+		WHERE r_num=#{rdto.r_num}
+	</update>
+	
+	<update id="restaurantImgUpdate" parameterType="map">
+	UPDATE restaurant_img
+	<set>
+		<if test="r_thumbnail != null">r_thumbnail=#{ridto.r_thumbnail},</if>
+		<if test="r_img1 != null">r_img1=#{ridto.r_img1},</if>
+		<if test="r_img2 != null">r_img2=#{ridto.r_img2},</if>
+		<if test="r_img3 != null">r_img3=#{ridto.r_img3},</if>
+		r_num = #{ridto.r_num}
+	</set>
+	WHERE r_num=#{ridto.r_num}
+	</update>
+	
+	<select id="restaurantAllImg" resultType="trip.restaurant.dto.RestaurantImgDto" parameterType="int">
+	SELECT * FROM restaurant_img
+	WHERE r_num=#{r_num}
+	</select>
+	
+	<delete id="restaurantDel" parameterType="int">
+	DELETE FROM restaurant WHERE r_num=#{r_num}
+	</delete>
+	
+	
+	<!-- 회원정보 가져오기 탭 -->
+	
+	<!-- 페이징처리를 위한 게시글 총 수 -->
+	<select id="userCount" resultType="int">
+		SELECT count(*) FROM users
+	</select>
+	
+	<!-- 회원정보 리스트 가져오기 -->
+	<resultMap type="trip.user.dto.UserDto" id="mInfo">
+	<result column="u_id" property="uId"/>
+	<result column="u_name" property="uName"/>
+	<result column="u_gender" property="uGender"/>
+	<result column="u_phone" property="uPhone"/>
+	<result column="u_email" property="uEmail"/>
+	<result column="u_birth" property="uBirth"/>
+	<result column="u_withdraw" property="uWithdraw"/>
+	</resultMap>
+	<select id="memberInfo" resultMap="mInfo" parameterType="trip.user.dto.PageDto">
+	<!-- SELECT * FROM users
+	ORDER BY u_name ASC -->
+	<![CDATA[
+		SELECT b.* FROM(
+		SELECT rownum as rm, a.* FROM(
+		SELECT * FROM users ORDER BY u_name ASC)a)b
+		WHERE b.rm >= #{startRow} AND b.rm <= #{endRow}
+	]]>
+	</select>
+</mapper>
+
+
+
+
+
+
+
+
+
+

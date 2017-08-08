@@ -1,0 +1,29 @@
+/*
+ * Nanum Gothic (Korean) http://www.google.com/fonts/earlyaccess
+ */
+@font-face {
+  font-family: 'Nanum Gothic';
+  font-style: normal;
+  font-weight: 400;
+  src: url(/css/vk/kor/bz15/font/NanumGothic-Regular.eot);
+  src: url(/css/vk/kor/bz15/font/NanumGothic-Regular.eot?#iefix) format('embedded-opentype'),
+       url(/css/vk/kor/bz15/font/NanumGothic-Regular.woff) format('woff'),
+       url(/css/vk/kor/bz15/font/NanumGothic-Regular.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Nanum Gothic';
+  font-style: normal;
+  font-weight: 700;
+  src: url(/css/vk/kor/bz15/font/NanumGothic-Bold.eot);
+  src: url(/css/vk/kor/bz15/font/NanumGothic-Bold.eot?#iefix) format('embedded-opentype'),
+       url(/css/vk/kor/bz15/font/NanumGothic-Bold.woff) format('woff'),
+       url(/css/vk/kor/bz15/font/NanumGothic-Bold.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Nanum Myeongjo';
+  font-style: normal;
+  src: url(/css/vk/kor/bz15/font/NanumMyeongjo-Bold.eot);
+  src: url(/css/vk/kor/bz15/font/NanumMyeongjo-Bold.eot?#iefix) format('embedded-opentype'),
+       url(/css/vk/kor/bz15/font/NanumMyeongjo-Bold.woff) format('woff'),
+       url(/css/vk/kor/bz15/font/NanumMyeongjo-Bold.ttf) format('truetype');
+}

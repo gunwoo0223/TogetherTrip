@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper    
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="festival">
+	<select id="count" resultType="int">
+		SELECT count(*) FROM festival
+	</select>
+	
+	<resultMap type="trip.festival.dto.FestivalDto" id="img_list">
+		<result column="f_num" property="f_num"/>
+		<result column="f_title" property="f_title"/>
+		<result column="f_loc" property="f_loc"/>
+		<result column="f_state" property="f_state"/>
+		<result column="f_city" property="f_city"/>
+		<result column="f_time" property="f_time"/>
+		<result column="f_contents" property="f_contents"/>
+		<result column="f_tel" property="f_tel"/>
+		<result column="f_reg_date" property="f_reg_date"/>
+		<result column="f_read_count" property="f_read_count"/>
+		<collection property="fImage" javaType="java.util.List" ofType="trip.festival.dto.FestivalImgDto">
+			<result column="f_thumbnail" property="f_thumbnail"/>		
+			<result column="f_img1" property="f_img1"/>
+			<result column="f_img2" property="f_img2"/>
+			<result column="f_img3" property="f_img3"/>
+			<!-- <result column="num" property="f_num"/> -->
+		</collection>
+	</resultMap>
+	<select resultMap="img_list" id="list" parameterType="trip.festival.dto.PageDto">
+ 	<![CDATA[ 
+		select b.* from(
+		select rownum as rm, a.* from(
+		select f.f_num, f.f_title, f.f_loc, f.f_state, f.f_city, f.f_time, f.f_contents, f.f_tel, f.f_reg_date, f.f_read_count, f.m_id, i.f_thumbnail from festival f, festival_img i where f.f_num=i.f_num ORDER BY f.f_num DESC)a)b
+		where b.rm>=#{startRow} and b.rm<=#{endRow}
+	]]> 
+	</select>
+	
+	<select id="img" resultType="trip.festival.dto.FestivalImgDto" parameterType="int">
+		SELECT i.f_thumbnail, i.f_img1, i.f_img2, i.f_img3
+		FROM festival f, festival_img i
+		WHERE f.f_num = i.f_num
+		AND f.f_num = #{f_num}
+	</select>
+	
+	<select id="aa" resultType="trip.festival.dto.FestivalDto">
+		select * from festival
+	</select>
+	
+	<select id="content" parameterType="int" resultMap="img_list">
+		SELECT * FROM festival f, festival_img i
+		WHERE f.f_num = i.f_num and f.f_num=#{f_num}
+		ORDER BY f.f_num DESC
+	</select>
+	
+	<select id="view" parameterType="int">
+		SELECT * FROM festival WHERE f_num=#{f_num}
+	</select>
+	
+	<update id="readCount" parameterType="int">
+		UPDATE festival
+		SET f_read_count = f_read_count+1
+		WHERE f_num=#{f_num}
+	</update>
+	
+	<select id="map" resultType="String" parameterType="int">
+		select f_state
+		from festival
+		where f_num=#{f_num}
+	</select>
+
+	<!-- 좋아요 눌렀는지 검사 -->
+	<select id="goodCheck" parameterType="trip.festival.dto.GoodDto" resultType="int">
+		SELECT count(*) FROM good
+		WHERE u_id = #{u_id}
+		AND f_num = #{f_num}
+	</select>
+
+	<!-- 좋아요 데이터 넣기 -->
+	<insert id="increaseFestivalGood" parameterType="trip.festival.dto.GoodDto">
+		INSERT INTO good
+		(g_num, u_id, f_num) VALUES 
+		(good_g_num_seq.NEXTVAL, #{u_id}, #{f_num})
+	</insert>
+		
+	<!-- festival의 총 좋아요 개수 가져오기 -->
+	<select id="goodCount" resultType="int" parameterType="trip.festival.dto.GoodDto">
+		SELECT count(*) FROM good
+		WHERE f_num = #{f_num}
+	</select>
+	
+</mapper>
+
+
+
+
+
+
+

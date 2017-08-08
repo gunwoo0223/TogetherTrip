@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper    
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="restaurant">
+
+	<resultMap type="trip.restaurant.dto.RestaurantDto" id="r_page">		<!-- PlaceDto와 PlaceImgDTO 두 가가지를 사용하기 위하여 resultMap을 사용해야 함. -->
+		 <result column="r_num" property="r_num"/>
+		 <result column="r_title" property="r_title"/>
+		 <result column="r_loc" property="r_loc"/>
+		 <result column="r_state" property="r_state"/>
+		 <result column="r_city" property="r_city"/>
+		 <result column="r_time" property="r_time"/>
+		 <result column="r_holiday" property="r_holiday"/>
+		 <result column="r_tel" property="r_tel"/>
+		 <result column="r_contents" property="r_contents"/>
+		 <result column="r_reg_date" property="r_reg_date"/>
+		 <result column="r_read_count" property="r_read_count"/>
+		 <result column="r_menu" property="r_menu"/>
+		 <collection property="rImage" javaType="java.util.List" ofType="trip.restaurant.dto.RestaurantImgDto">
+		 	<result column="r_thumbnail" property="r_thumbnail"/>
+			<result column="r_img1" property="r_img1"/>
+			<result column="r_img2" property="r_img2"/>
+			<result column="r_img3" property="r_img3"/>
+		 </collection>
+	</resultMap>
+	
+	
+	<select id="list" resultMap="r_page" parameterType="trip.restaurant.dto.PageDto">
+		<![CDATA[
+		select b.* from(
+		select rownum as rm, a.* from(
+		select r.r_num, r.r_title, r.r_loc, r.r_state, r.r_city, r.r_time, r.r_holiday, r.r_tel, r.r_contents, r.r_reg_date, r.r_read_count, r.r_menu, i.r_thumbnail, i.r_img1, i.r_img2, i.r_img3 from restaurant r, restaurant_img i where r.r_num=i.r_num ORDER BY r.r_num DESC)a)b
+		where b.rm>=#{startRow} and b.rm<=#{endRow}
+		]]>
+	</select>
+	
+	<!-- 페이지 수를 계산할때 전체 레코드수를 넘기기 위해.. -->
+	<select id="resCnt" resultType="int">
+		select count(*) from restaurant
+	</select>
+	
+	<update id="readcount" parameterType="int">
+		update restaurant
+		set r_read_count=r_read_count+1
+		where r_num=#{r_num}
+	</update>
+	
+	<!-- 상세페이지 -->
+	<select id="list2" resultMap="r_page" parameterType="int">
+		select * from restaurant r, restaurant_img i
+		where r.r_num=i.r_num
+		and r.r_num=#{r_num}
+	</select>
+	
+	<select id="map" resultType="String" parameterType="int">
+		select r_state
+		from restaurant
+		where r_num = #{r_num}
+	</select>
+	
+	<insert id="insertGood" parameterType="trip.restaurant.dto.GoodDto">
+		INSERT INTO good
+		(g_num, u_id, r_num) VALUES 
+		(good_g_num_seq.NEXTVAL, #{u_id}, #{r_num})
+	</insert>
+	
+	<!-- 좋아요 값 가져오기 -->
+	<select id="selectGoodCount" parameterType="trip.restaurant.dto.GoodDto" resultType="int">
+		SELECT count(*)
+		FROM good
+		WHERE r_num=#{r_num}
+	</select>
+	
+	<!-- 좋아요 눌렀는지 검사 -->
+	<select id="checkGood" parameterType="trip.restaurant.dto.GoodDto" resultType="int">
+		SELECT count(*)
+		FROM good
+		WHERE r_num = #{r_num} 
+		AND u_id = #{u_id}
+	</select>
+	
+</mapper>
