@@ -40,6 +40,7 @@ public class AllSearchController {
 		System.out.println("topicList : "+topicList);
 		System.out.println("topic : "+topic);
 		System.out.println("allSearch 제발 되어라");
+		System.out.println("git 두번째 업로드를 위한 코드 수정");
 		
 		int totalRecords = 0; // 불러올 테이블의 레코드 수를 반환할 변수를 선언
 		
